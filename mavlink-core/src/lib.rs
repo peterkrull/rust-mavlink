@@ -432,12 +432,17 @@ impl MAVLinkV2MessageRaw {
 
     #[inline]
     pub fn header(&mut self) -> &[u8] {
-        &self.0[1..=Self::HEADER_SIZE]
+        &self.0[1..(Self::HEADER_SIZE + 1)]
     }
 
     #[inline]
-    fn mut_header(&mut self) -> &mut [u8] {
-        &mut self.0[1..=Self::HEADER_SIZE]
+    pub fn mut_header(&mut self) -> &mut [u8] {
+        &mut self.0[1..(Self::HEADER_SIZE + 1)]
+    }
+
+    #[inline]
+    pub fn mut_magic(&mut self) -> &mut u8 {
+        &mut self.0[0]
     }
 
     #[inline]
@@ -490,7 +495,7 @@ impl MAVLinkV2MessageRaw {
         ])
     }
 
-    fn mut_payload_and_checksum_and_sign(&mut self) -> &mut [u8] {
+    pub fn mut_payload_and_checksum_and_sign(&mut self) -> &mut [u8] {
         let payload_length: usize = self.payload_length().into();
 
         // Signature to ensure the link is tamper-proof.
